@@ -1,0 +1,29 @@
+###############################################################
+Copyright (c) 2002-2017 SIMCom Wireless Solutions Co.,Ltd.. 
+All rights reserved. 
+###############################################################
+
+in Linux OS
+complie：
+./build.sh 
+clean:
+./build.sh -c
+
+in Window OS
+complie：
+./build.cmd
+clean:
+./build.cmd -c
+
+NOTE:
+   in build.sh, if you env is different with this, need config below env:
+   1. lincense server: ARMLMD_LICENSE_FILE=@172.21.1.76
+   2. toolchain path : TOOLCHAIN_PATH="/opt/QualComm/RVCT5.05b106/bin"
+   3. download "ARM Compiler 5.05 update 1 (build 106) for Linux" from https://silver.arm.com/browse/DS500
+   4. if you havn't lincense, you can generate your 30-day evaluation license
+from https://silver.arm.com/browse/DS500-BN-00003.
+
+after compile successfully, please copy below files:
+    bin/cust_app.bin
+to /custapp/cust_app.bin in Alternate FS. and reboot modem.
+then, your app will be loaded after reboot!
