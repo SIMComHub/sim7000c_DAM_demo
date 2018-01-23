@@ -10,7 +10,7 @@ Copyright (c) 2017 by Qualcomm Technologies, Incorporated.  All Rights Reserved.
 
                             Edit History
 
-  $Header: //components/rel/core.tx/1.0.c3/api/services/qapi_timer_id.h#1 $
+  $Header: //components/rel/core.tx/1.0.c3/api/services/qapi_timer_id.h#2 $
 
 when       who     what, where, why
 --------   ---     ----------------------------------------------------------

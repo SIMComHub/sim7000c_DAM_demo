@@ -6,26 +6,26 @@
  *
  * Temperature Sensor (TSENS)
  *
- * @addtogroup qapi_tsens
+ * @addtogroup qapi_tsens_apis
  * @{
  *
- * Temperature sensor is used to monitor the temperature of the SoC
+ * The temperature sensor is used to monitor the temperature of the SoC
  * using on-die analog sensors.
  *
  * This programming interface allows client software to read the
  * temperature returned by each sensor. The code snippet below shows
  * an example usage.
  *
- * Please consult hardware documentation for
- * the placement of sensors on the die.
+ * Consult hardware documentation for
+ * the placement of the sensors on the die.
  *
- * @code {.c}
+ * @code
  *
  *
  *   * The code snippet below demonstates usage of this interface. The example
  *   * below opens TSENS to obtain a handle, gets the number of sensors, sets
- *   * temparatures thresholds for each sensor, reads
- *   * each sensor's temperature, and then closes the handle.
+ *   * temparature thresholds for each sensor, reads each sensor's
+ *   * temperature, and then closes the handle.
  *
  *   qapi_Status_t status;
  *   qapi_TSENS_Handle_t handle;
@@ -54,7 +54,9 @@
  *
  *          else
  *             {
- *               status= qapi_TSENS_Set_Thresholds(handle, sensor, Threshold_Type, Threshold_Degree, Threshold_CB, context_ptr);
+ *               status= qapi_TSENS_Set_Thresholds(handle, sensor, 
+ *                               Threshold_Type, Threshold_Degree,
+ *                                       Threshold_CB, context_ptr);
  *             	 if (status != QAPI_OK) { ... }
  *
  *      	     else
@@ -74,14 +76,12 @@
  *
  * @}
  */
-/************************************************************************
- * 
+/*
  * Copyright (C) 2017 Qualcomm Technologies, Inc.
  * All Rights Reserved.			
  * Confidential and Proprietary - Qualcomm Technologies, Inc.
  *
- *
- ***********************************************************************/
+ */
 
 /*===========================================================================
 
@@ -179,9 +179,9 @@ when         who   what, where, why
 *  @param[out] Handle   Pointer to a TSENS handle.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_TSENS_Open
 (
@@ -202,9 +202,9 @@ qapi_Status_t qapi_TSENS_Open
 *  @param[out] Num_Sensors_Ptr  Number of sensors
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_TSENS_Get_Num_Sensors
 (
@@ -231,9 +231,9 @@ qapi_Status_t qapi_TSENS_Get_Num_Sensors
 *  @param[out] Temp_Result_Ptr  Temperature reported by the sensor.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_TSENS_Get_Temp
 (
@@ -253,10 +253,10 @@ qapi_Status_t qapi_TSENS_Get_Temp
 *  @param[in]  Sensor_Num   Selected sensor number.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified. \n
-*  QAPI_ERR_TIMEOUT       -- The sensor did not return a reading before the timeout.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_ERR_TIMEOUT       -- The sensor did not return a reading before the timeout.
 */
 qapi_Status_t qapi_TSENS_Get_Calibration_Status
 (
@@ -289,9 +289,9 @@ qapi_Status_t qapi_TSENS_Get_Calibration_Status
 *  @param[in]  Context_Ptr      Context pointer that is returned with the callback.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_TSENS_Set_Thresholds
 (
@@ -326,9 +326,9 @@ qapi_Status_t qapi_TSENS_Set_Thresholds
 *  @param[in]  Enable_Threshold  Enable or disable the threshold.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_TSENS_Set_Enable_Thresholds
 (
@@ -345,9 +345,9 @@ qapi_Status_t qapi_TSENS_Set_Enable_Thresholds
 *  @param[in] Handle   Handle provided by qapi_TSENS_Open().
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_TSENS_Close
 (

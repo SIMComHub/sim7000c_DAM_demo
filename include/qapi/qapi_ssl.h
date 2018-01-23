@@ -52,7 +52,7 @@
 @{ */
 
 /** Maximum number of characters in a certificate or CA list name. */
-#define QAPI_NET_SSL_MAX_CERT_NAME_LEN (32) 
+#define QAPI_NET_SSL_MAX_CERT_NAME_LEN (64) 
 
 /** Maximum number of file names returned in the qapi_Net_SSL_Cert_List API. */
 #define QAPI_NET_SSL_MAX_NUM_CERTS (10)

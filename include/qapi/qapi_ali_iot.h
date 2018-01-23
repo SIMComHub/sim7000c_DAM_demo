@@ -60,8 +60,6 @@ typedef enum _IOT_LogLevel {
 #define  TXM_QAPI_IOT_CLOSE_LOG                              TXM_QAPI_IOT_BASE + 16
 #define  TXM_QAPI_IOT_SET_LOG_LEVEL                          TXM_QAPI_IOT_BASE + 17
 #define  TXM_QAPI_IOT_DUMP_MEMORY_STATS                      TXM_QAPI_IOT_BASE + 18
-#define  TXM_QAPI_IOT_VISUAL_AT_OUTPUT                       TXM_QAPI_IOT_BASE + 19
-#define  TXM_QAPI_IOT_VISUAL_AT_INPUT                        TXM_QAPI_IOT_BASE + 20
 
 /*SIMCOM zhangwei 2017-10-26 add ota qapi and HAL base index  begin*/
 #define   TXM_QAPI_IOT_OTA_INIT                       		TXM_QAPI_IOT_BASE + 21
@@ -109,17 +107,6 @@ typedef enum _IOT_LogLevel {
     (ULONG) 0,(ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, \
     (ULONG) 0))
 
-#define IOT_Visual_AT_Output(data, length)\
-    ( (_txm_module_system_call12)(TXM_QAPI_IOT_VISUAL_AT_OUTPUT,\
-    (ULONG) data,(ULONG) length, (ULONG) 0, (ULONG) 0,(ULONG) 0,\
-    (ULONG) 0,(ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, \
-    (ULONG) 0))
-
-#define IOT_Visual_AT_Input(data, length)\
-    ((unsigned short) (_txm_module_system_call12)(TXM_QAPI_IOT_VISUAL_AT_INPUT,\
-    (ULONG) data,(ULONG) length, (ULONG) 0, (ULONG) 0,(ULONG) 0,\
-    (ULONG) 0,(ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, \
-    (ULONG) 0))
 
 
 /*SIMCOM zhangwei 2017-10-19 fixed bug end*/

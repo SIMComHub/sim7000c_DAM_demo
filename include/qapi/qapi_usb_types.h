@@ -59,7 +59,7 @@ when         who   what, where, why
 typedef int32_t           qapi_USB_Status_t;
 
 /** Client callback function type to be called when data is received from the client. */
-typedef void (* qapi_USB_App_Rx_Cb_t) (void);
+typedef void (* qapi_USB_App_Rx_Cb_t) (uint16_t num_bytes);
 
 /** IOCTL command type. */
 typedef enum {

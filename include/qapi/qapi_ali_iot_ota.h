@@ -112,12 +112,13 @@ typedef enum {
     (ULONG) handle,(ULONG) version, (ULONG) 0, (ULONG) 0,(ULONG) 0,\
     (ULONG) 0,(ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, \
     (ULONG) 0))
-
+/*SIMCOM zhangwei 2018-01-11 fixed iot qapi bug  at ticket/26 begin*/
  #define IOT_OTA_ReportProgress(handle,progress,msg)\
-    ( (_txm_module_system_call12)( TXM_QAPI_IOT_OTA_REPORTPROGRESS,\
+    ( (_txm_module_kernel_call_dispatcher)( TXM_QAPI_IOT_OTA_REPORTPROGRESS,\
     (ULONG) handle,(ULONG) progress, (ULONG) msg, (ULONG) 0,(ULONG) 0,\
     (ULONG) 0,(ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, \
     (ULONG) 0))
+/*SIMCOM zhangwei 2018-01-11 fixed iot qapi bug  at ticket/26 end*/
 
  #define IOT_OTA_IsFetching(handle)\
     ( (_txm_module_system_call12)( TXM_QAPI_IOT_OTA_ISFETCHING ,\

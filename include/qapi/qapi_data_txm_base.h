@@ -57,7 +57,7 @@ extern "C" {
 #define  TXM_QAPI_NET_HTTP_NUM_IDS                20
 
 #define  TXM_QAPI_MQTT_BASE                       TXM_QAPI_NET_HTTP_BASE + TXM_QAPI_NET_HTTP_NUM_IDS
-#define  TXM_QAPI_MQTT_NUM_IDS                    10
+#define  TXM_QAPI_MQTT_NUM_IDS                    15
 
 #define TXM_QAPI_DEVICE_INFO_BASE                 TXM_QAPI_MQTT_BASE + TXM_QAPI_MQTT_NUM_IDS
 #define TXM_QAPI_DEVICE_INFO_NUM_IDS              5
@@ -65,6 +65,8 @@ extern "C" {
 #define TXM_QAPI_NET_LWM2M_BASE                   TXM_QAPI_DEVICE_INFO_BASE + TXM_QAPI_DEVICE_INFO_NUM_IDS
 #define TXM_QAPI_NET_LWM2M_NUM_IDS                20
 
+#define TXM_QAPI_ATFWD_BASE                       TXM_QAPI_NET_LWM2M_BASE + TXM_QAPI_NET_LWM2M_NUM_IDS
+#define TXM_QAPI_ATFWD_NUM_IDS                    5
 
 #ifdef __cplusplus
 } /* closing brace for extern "C" */

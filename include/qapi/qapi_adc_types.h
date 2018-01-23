@@ -1,4 +1,4 @@
-/************************************************************************
+/**
  * @file qapi_adc_types.h
  *
  * @brief Type definitions for ADC QAPIs.
@@ -8,7 +8,7 @@
  * All Rights Reserved.
  * Confidential and Proprietary - Qualcomm Technologies, Inc.
  *
- ***********************************************************************/
+ */
 
 /*===========================================================================
 
@@ -60,9 +60,10 @@ when         who   what, where, why
 #define QAPI_ERR_UNKNOWN_ADC             ___QAPI_ERROR_ADC(21)
 
 /** @addtogroup qapi_adc_datatypes
-@{ 
-Below macros are ADC channel names that should be passed as input
-to qapi_ADC_Read_Channel()
+@{ */
+
+/* The following macros are ADC channel names that should be passed as inputs
+to qapi_ADC_Read_Channel().
 */
                                    
 /** Physical units are in millivolts. */
@@ -89,6 +90,7 @@ to qapi_ADC_Read_Channel()
 /** Physical units are in 2^-10 degrees C. */
 #define ADC_INPUT_XO_THERM_GPS       "XO_THERM_GPS"
 
+#define ADC_INPUT_MPP6            "MPP6"   //SIMCOM zhangwei 2017-12-29 add external adc at ticket/25
 
 #define ARRAY_LENGTH(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -247,9 +249,9 @@ typedef struct
 */
 typedef struct
 {
-   qapi_Adc_Input_Properties_Type_t adcTMInputProps; /**< ADC channel input properties */
-   qapi_AdcTM_Threshold_Cb_Type pfnAdcTMThresholdCb; /**< Amplitude threshold callback type */
-   void *pCtxt;                                      /**< Context specified when setting the threshold */
+   qapi_Adc_Input_Properties_Type_t adcTMInputProps; /**< ADC channel input properties. */
+   qapi_AdcTM_Threshold_Cb_Type pfnAdcTMThresholdCb; /**< Amplitude threshold callback type. */
+   void *pCtxt;                                      /**< Context specified when setting the threshold. */
 } qapi_AdcTM_Request_Params_Type_t;
 
 /** @} */ /* end_addtogroup qapi_adc_datatypes */

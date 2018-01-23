@@ -43,10 +43,19 @@ typedef int32_t qapi_PSM_Status_t;
 =============================================================================*/
 
 #define QAPI_ERR_PSM_FAIL                    __QAPI_PSM_ERROR(1)
+                                                  /* Failure or Invalid Operation <Unused> */
+
 #define QAPI_ERR_PSM_GENERIC_FAILURE         __QAPI_PSM_ERROR(2)
+                                                  /* Failure to send request to PSM Daemon. */
+
 #define QAPI_ERR_PSM_APP_NOT_REGISTERED      __QAPI_PSM_ERROR(3)
+                                                  /* Client ID passed is not a registered application. */
+
 #define QAPI_ERR_PSM_WRONG_ARGUMENTS         __QAPI_PSM_ERROR(4)
+                                                  /* NULL or Invalid Arguments sent. */
+
 #define QAPI_ERR_PSM_IPC_FAILURE             __QAPI_PSM_ERROR(5)
+                                                  /* Internal failure to establish communication with PSM Daemon. */
 
 /** @} */
 #endif // ] #ifndef QAPI_PSM_STATUS_H

@@ -138,19 +138,15 @@ typedef void iotx_coap_context_t;
     (ULONG) p_context,(ULONG) 0, (ULONG) 0, (ULONG) 0,(ULONG) 0,\
     (ULONG) 0,(ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, \
     (ULONG) 0))
-
+/*SIMCOM zhangwei 2018-01-11 fixed iot qapi bug  at ticket/26 begin*/ 
 #define IOT_CoAP_SendMessage(p_context, p_path, p_message)\
-    ((int) (_txm_module_system_call12)(TXM_QAPI_IOT_COAP_SEND_MESSAGE,\
-    (ULONG) p_context,(ULONG) p_path, (ULONG) p_message, (ULONG) 0,(ULONG) 0,\
-    (ULONG) 0,(ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, \
-    (ULONG) 0))
+    ((int) (_txm_module_kernel_call_dispatcher)(TXM_QAPI_IOT_COAP_SEND_MESSAGE,\
+    (ULONG) p_context,(ULONG) p_path, (ULONG) p_message))
 
 #define IOT_CoAP_GetMessagePayload(p_message, pp_payload, p_len)\
-    ((int) (_txm_module_system_call12)(TXM_QAPI_IOT_COAP_GET_MESSAGE_PAYLOAD,\
-    (ULONG) p_message,(ULONG) pp_payload, (ULONG) p_len, (ULONG) 0,(ULONG) 0,\
-    (ULONG) 0,(ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, \
-    (ULONG) 0))
-
+    ((int) (_txm_module_kernel_call_dispatcher)(TXM_QAPI_IOT_COAP_GET_MESSAGE_PAYLOAD,\
+    (ULONG) p_message,(ULONG) pp_payload, (ULONG) p_len))
+/*SIMCOM zhangwei 2018-01-11 fixed iot qapi bug  at ticket/26 end*/
 #define IOT_CoAP_GetMessageCode(p_message, p_resp_code)\
     ((int) (_txm_module_system_call12)(TXM_QAPI_IOT_COAP_GET_MESSAGE_CODE,\
     (ULONG) p_message,(ULONG) p_resp_code, (ULONG) 0, (ULONG) 0,(ULONG) 0,\

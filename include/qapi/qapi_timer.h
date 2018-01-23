@@ -72,7 +72,7 @@
                 QUALCOMM Proprietary and Confidential.
 ==================================================================================*/
 
-/* $Header: //components/rel/core.tx/1.0.c3/api/services/qapi_timer.h#1 $ */
+/* $Header: //components/rel/core.tx/1.0.c3/api/services/qapi_timer.h#2 $ */
 
 /*==========================================================================
 when       who     what, where, why

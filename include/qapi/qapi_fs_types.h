@@ -19,6 +19,7 @@
 
 when         who   what, where, why
 ----------   ---   ---------------------------------------------------------
+2017-06-30   as    Modified doxygen comment updates.
 2017-04-27   leo   (Tech Comm) Edited/added Doxygen comments and markup.
 2017-04-27   as    Updated doxygen comments.
 2017-04-13   as    Defining statvfs structure in QAPI same as in EFS.
@@ -107,8 +108,6 @@ when         who   what, where, why
 #define QAPI_ERR_UNKNOWN          ___QAPI_ERROR(20)
                                         /* Unknown error */
 
-/** @addtogroup qapi_fs_types
-@{ */
 
 /*======================================================================
                           TYPEDEFS
@@ -133,6 +132,9 @@ typedef int32              qapi_FS_Status_t;
 typedef uint16             qapi_FS_Mode_t;
 typedef void*              qapi_FS_Iter_Handle_t;
 typedef long long          qapi_FS_Offset_t;
+
+/** @addtogroup qapi_fs_types
+@{ */
 
 /*=============================================================================
                                    ENUMS
@@ -287,15 +289,14 @@ enum qapi_FS_Filename_Encoding_e{
 };
 
 /** See the qapi_FS_Iter_Next() API for information about this structure. */
- struct qapi_FS_Iter_Entry_s {
-/** Name of Directory component.*/
+struct qapi_FS_Iter_Entry_s {
   char file_Path[QAPI_FS_NAME_MAX+1];
-/** Refer the structure qapi_FS_Stat_Type_s for information about 
-    this structure.*/
+  /**< Name of the directory component. */
   struct qapi_FS_Stat_Type_s SBuf;
-/** This is a bitmask for the above structure which defines what  
-    fields are filled in the above structure when this API is called.*/
+  /**< See qapi_FS_Stat_Type_s for information on this structure. */
   uint32 qapi_FS_D_Stats_Present; 
+  /**< Bitmask for the qapi_FS_Stat_Type_s structure that defines
+       which fields are filled when the qapi_FS_Iter_Next() API is called. */
 };
 
 /** @} */ /* end_addtogroup qapi_fs_types */

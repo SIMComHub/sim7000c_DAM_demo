@@ -41,7 +41,7 @@ extern "C" {
 #define QAPI_NULL_EXTRA_ARG	0x4E415247
 
 #define  TXM_QAPI_ID_START                        TXM_APPLICATION_REQUEST_ID_BASE
-// this can be discussed for a proper name
+
 #define  TXM_QAPI_ID_END                          TXM_QAPI_ID_START + TXM_QAPI_MAX_NUM_IDS
 
 // *NOT TO BE CHANGED* or else it may impact system functionality
@@ -118,13 +118,12 @@ extern "C" {
 #define  TXM_QURT_TIMETICK_BASE                   TXM_QAPI_PMIC_BASE + TXM_QAPI_PMIC_NUM_IDS
 #define  TXM_QURT_TIMETICK_NUM_IDS                10
 
-/*SIMCOM mengxiangning added for qapi function begin 20170829*/
-#if defined __SIMCOM_PUB__
-#define  TXM_QAPI_IOT_ALIBABA_BASE                TXM_QURT_TIMETICK_BASE + TXM_QURT_TIMETICK_NUM_IDS
-#define  TXM_QAPI_IOT_ALIBABA_NUM_IDS             100
-#endif
-/*SIMCOM mengxiangning added for qapi function end 20170829*/
-
+#define  TXM_QAPI_DAM_BASE                        TXM_QC_OEM_API_BASE
+#define  TXM_QAPI_DAM_NUM_IDS                     50
+#define  TXM_QAPI_IOT_BASE                        (TXM_QAPI_DAM_BASE+TXM_QAPI_DAM_NUM_IDS)                       
+#define  TXM_QAPI_IOT_NUM_IDS                     100
+#define  TXM_QAPI_IOT_HAL_BASE                    (TXM_QAPI_IOT_BASE +TXM_QAPI_IOT_NUM_IDS)
+#define  TXM_QAPI_IOT_HAL_NUM_IDS                 100
 
 #ifdef __cplusplus
 } /* closing brace for extern "C" */

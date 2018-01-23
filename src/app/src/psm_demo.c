@@ -39,6 +39,7 @@
 #include "qapi/qapi.h"
 #include "qapi/qapi_status.h"
 
+#include "txm_module.h"
 #include "qapi/qapi_psm.h"
 #include "qapi/qapi_types.h"
 #include "qapi/qapi_psm_status.h"
@@ -46,7 +47,7 @@
 #include "qapi/qapi_timer.h"
 #include "qapi/qapi_ns_utils.h"
 #include "qapi/qapi_socket.h"
-#include "qapi/qapi_ali_iot.h"
+#include "qapi/qapi_dam.h"
 #include "msgcfg.h"
 #include "msg_mask.h"
 #include "qapi_diag.h"
@@ -114,7 +115,6 @@ static QCLI_Command_Status_t psm_demo_cancel_psm(uint32_t Parameter_Count, QCLI_
 static QCLI_Command_Status_t psm_demo_load_modem(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List);
 static QCLI_Command_Status_t psm_demo_simulate_hc_failure(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List);
 static QCLI_Command_Status_t update(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List);
-static QCLI_Command_Status_t atcmd(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List);
 
 const QCLI_Command_t psm_cmd_list[] =
 {
@@ -126,7 +126,6 @@ const QCLI_Command_t psm_cmd_list[] =
     {psm_demo_load_modem, false, "LOAD MODEM", "<client_id>", "Load Modem Dynamically"},
     {psm_demo_simulate_hc_failure, false, "SIMULATE HEALTH CHECK FAILURE", "<client_id>", "Simulate Health Check Failure"},
     {update, false, "update", "update", "update self version 3"},
-    {atcmd, false, "atcmd", "<at command>" , "Send At command to modem",NULL},
 };
 
 const QCLI_Command_Group_t psm_cmd_group =
@@ -422,7 +421,7 @@ static QCLI_Command_Status_t psm_demo_simulate_hc_failure(uint32_t Parameter_Cou
 
 static QCLI_Command_Status_t update(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List)
 {
-    qapi_FS_Update_App();
+    qapi_DAM_Update_App();
     return QCLI_STATUS_SUCCESS_E;
 }
 
@@ -441,35 +440,5 @@ void Initialize_PSM_Demo(void)
     return;
 }
 
-static QCLI_Command_Status_t atcmd(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List)
-{   
-    if (Parameter_Count == 1)  
-    { 
-        unsigned char data[2048];       
-        int len = 0;         
-        memset(data,0,2048);   
-        memcpy(data,Parameter_List[0].String_Value,strlen((char *)Parameter_List[0].String_Value));
-        
-        memcpy(data+strlen((char *)data),"\r\n",2);
-        IOT_Visual_AT_Input(data,strlen((char *)data));
-        SIMCOM_LOG_MSG("atcmd is :%s,%d", data,strlen((char *)data));
-      
-        do
-        {
-            qapi_Timer_Sleep(50,QAPI_TIMER_UNIT_MSEC,false);
-            memset(data,0x00,2048);         
-            len=  IOT_Visual_AT_Output(data,2048);
-            if(len > 0)        
-            {
-                QCLI_Printf(qcli_psm_handle, "%s",data);
-            }
-        }while(len > 0);       
-    }
-    else 
-    {
-        return QCLI_STATUS_USAGE_E;     
-    }
-    
-    return QCLI_STATUS_SUCCESS_E;   
-}
+
 

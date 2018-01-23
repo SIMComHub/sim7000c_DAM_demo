@@ -29,6 +29,10 @@ All rights reserved.
 #define  TXM_QAPI_MQTT_SET_CONNECT_CB     TXM_QAPI_MQTT_BASE + 8
 #define  TXM_QAPI_MQTT_SET_SUBSCRIBE_CB   TXM_QAPI_MQTT_BASE + 9
 #define  TXM_QAPI_MQTT_SET_MESSAGE_CB     TXM_QAPI_MQTT_BASE + 10
+#define  TXM_QAPI_MQTT_SET_PUBLISH_CB     TXM_QAPI_MQTT_BASE + 11
+#define  TXM_QAPI_MQTT_PUBLISH_ID         TXM_QAPI_MQTT_BASE + 12
+
+
 
     
 /***********************************************************
@@ -77,6 +81,26 @@ enum/** @cond */ QAPI_NET_MQTT_CONN_STATE  /** @endcond */{
   QAPI_NET_MQTT_ST_DYING_E, /**< MQTT connection dying*/
   QAPI_NET_MQTT_ST_DEAD_E, /**< MQTT connection dead*/
 };
+
+enum QAPI_NET_MQTT_MSG_TYPES{
+  QAPI_NET_MQTT_CONNECT = 1,
+  QAPI_NET_MQTT_CONNACK,
+  QAPI_NET_MQTT_PUBLISH,
+  QAPI_NET_MQTT_PUBACK,
+  QAPI_NET_MQTT_PUBREC,
+  QAPI_NET_MQTT_PUBREL,
+  QAPI_NET_MQTT_PUBCOMP,
+  QAPI_NET_MQTT_SUBSCRIBE,
+  QAPI_NET_MQTT_SUBACK,
+  QAPI_NET_MQTT_UNSUBSCRIBE,
+  QAPI_NET_MQTT_UNSUBACK,
+  QAPI_NET_MQTT_PINGREQ,
+  QAPI_NET_MQTT_PINGRESP,
+  QAPI_NET_MQTT_DISCONNECT,
+  QAPI_NET_MQTT_MQTT_NO_RESPONSE_MSG_REQD,
+  QAPI_NET_MQTT_INVALID_RESP,
+};
+
 
 typedef enum QAPI_NET_MQTT_CONN_STATE qapi_Net_MQTT_Conn_State_t;
 /********************************************************
@@ -138,6 +162,10 @@ typedef void (*qapi_Net_MQTT_Message_CB_t)(qapi_Net_MQTT_Hndl_t mqtt,
     int32_t qos,
     const void* sid);
 
+typedef void (*qapi_Net_MQTT_Publish_CB_t)(qapi_Net_MQTT_Hndl_t mqtt,
+    enum QAPI_NET_MQTT_MSG_TYPES msgtype,
+    int qos,
+    uint16_t msg_id);
 
 #ifdef  QAPI_TXM_MODULE     // USER_MODE_DEFS
 
@@ -146,12 +174,13 @@ typedef void (*qapi_Net_MQTT_Message_CB_t)(qapi_Net_MQTT_Hndl_t mqtt,
 #define qapi_Net_MQTT_Connect(a,b)                  ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_CONNECT            , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #define qapi_Net_MQTT_Disconnect(a)                 ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_DISCONNECT         , (ULONG) a, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #define qapi_Net_MQTT_Publish(a,b,c,d,e,f)          ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_PUBLISH            , (ULONG) a, (ULONG) b, (ULONG) c, (ULONG) d, (ULONG) e, (ULONG) f, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
+#define qapi_Net_MQTT_Publish_Get_Msg_Id(a,b,c,d,e,f,g)     ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_PUBLISH_ID         , (ULONG) a, (ULONG) b, (ULONG) c, (ULONG) d, (ULONG) e, (ULONG) f, (ULONG) g, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #define qapi_Net_MQTT_Subscribe(a,b,c)              ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_SUBSCRIBE          , (ULONG) a, (ULONG) b, (ULONG) c, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #define qapi_Net_MQTT_Unsubscribe(a,b)              ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_UNSUSCRIBE         , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #define qapi_Net_MQTT_Set_Connect_Callback(a,b)     ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_SET_CONNECT_CB     , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #define qapi_Net_MQTT_Set_Subscribe_Callback(a,b)   ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_SET_SUBSCRIBE_CB   , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #define qapi_Net_MQTT_Set_Message_Callback(a,b)     ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_SET_MESSAGE_CB     , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
-
+#define qapi_Net_MQTT_Set_Publish_Callback(a,b)     ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_SET_PUBLISH_CB     , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #else
 
 UINT qapi_Net_MQTT_Handler(UINT id, UINT a1, UINT a2, UINT a3, UINT a4, UINT a5, UINT a6, UINT a7, UINT a8, UINT a9, UINT a10, UINT a11, UINT a12);
@@ -199,6 +228,20 @@ qapi_Status_t qapi_Net_MQTT_Disconnect(qapi_Net_MQTT_Hndl_t hndl);
 qapi_Status_t qapi_Net_MQTT_Publish(qapi_Net_MQTT_Hndl_t hndl, const uint8_t* topic, const uint8_t* msg, int32_t msg_len, int32_t qos, bool retain);
 
 /**
+ * @brief Publish message to a particular topic
+ * @param[in] hdnl MQTT handle
+ * @param[in] topic MQTT Topic
+ * @param[in] msg MQTT Payload
+ * @param[in] msg_len MQTT Payload length
+ * @param[in] qos QOS to be used for message
+ * @param[in] retain Retain flag
+ * @param[out] Message id of the Mqtt publish msg
+ * @return QAPI_OK on Success or <0 on Failure
+ */
+qapi_Status_t qapi_Net_MQTT_Publish_Get_Msg_Id(qapi_Net_MQTT_Hndl_t hndl, const uint8_t* topic, const uint8_t* msg, int32_t msg_len, int32_t qos, bool retain, uint16_t *msg_id);
+
+
+/**
  * @brief Subscribe to a topic
  * @param[in] mqtt MQTT Handle
  * @param[in] topic Subscription topic
@@ -241,6 +284,13 @@ qapi_Status_t qapi_Net_MQTT_Set_Subscribe_Callback(qapi_Net_MQTT_Hndl_t hndl, qa
 qapi_Status_t qapi_Net_MQTT_Set_Message_Callback(qapi_Net_MQTT_Hndl_t hndl, qapi_Net_MQTT_Message_CB_t callback);
 
 
+/**
+ * @brief Set Publish callback, will be invoked when PUBACK(QOS1)/PUBREC,PUBCOMP(QOS2)
+ * @param mqtt MQTT handle
+ * @param callback Callback to be invoked
+ * @return QAPI_OK on Success or < 0 on Failure
+ */
+qapi_Status_t qapi_Net_MQTT_Set_Publish_Callback(qapi_Net_MQTT_Hndl_t hndl, qapi_Net_MQTT_Publish_CB_t callback);
 #endif /*!TXM_MODULE*/
 
 #endif /*_QAPI_NET_MQTT_H*/

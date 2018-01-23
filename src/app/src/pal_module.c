@@ -46,13 +46,15 @@
 #include "qapi/qapi_status.h"
 #include "qapi_uart.h"
 
-#include "qapi_fs.h"
 #include "qapi_timer.h"
 
 #include "qapi_diag.h"
 #include "msgcfg.h"
 #include "msg_mask.h"
 
+#include "qapi/qapi_usb.h"
+#include "qapi/qapi_usb_types.h"
+#include <stdbool.h>
 /*-------------------------------------------------------------------------
  * Preprocessor Definitions and Constants
  *-----------------------------------------------------------------------*/
@@ -68,6 +70,7 @@
 #define QCLI_STACK_SIZE 16384
 
 
+#define UART_PORT_CONTROL  //if UART_PORT_CONTROL has defined,used uart port, if not used usb port.
 /*-------------------------------------------------------------------------
  * Type Declarations
  *-----------------------------------------------------------------------*/
@@ -79,6 +82,10 @@
  *-----------------------------------------------------------------------*/
 
 static PAL_Context_t PAL_Context_D;
+#ifndef UART_PORT_CONTROL
+static qapi_USB_Status_t usb_status;
+static bool is_usb_connect = false;
+#endif
 
 TX_EVENT_FLAGS_GROUP Start_Thread_Event;
 
@@ -96,7 +103,9 @@ char send_buf[PAL_MAX_SEND_BUFFER_SIZE];
  *-----------------------------------------------------------------------*/
 
 static void Initialize_Samples(void);
+#ifdef UART_PORT_CONTROL
 static void cli_rx_cb(uint32_t num_bytes, void *cb_data);
+#endif
 void QCLI_Thread(void *Param);
 static qbool_t PAL_Initialize(void);
 extern void loc_qcli_iface_init(void);
@@ -123,6 +132,7 @@ static void Initialize_Samples(void)
    @param CB_Data[in]   is the application defined callback data.  In this case
                         it is the index of the buffer received on.
 */
+#ifdef UART_PORT_CONTROL
 static void cli_rx_cb(uint32_t num_bytes, void *cb_data)
 {
 
@@ -155,7 +165,7 @@ static void cli_rx_cb(uint32_t num_bytes, void *cb_data)
   }
 
 }
-
+#endif
 /**
    @brief This function represents the main thread of execution.
 
@@ -167,6 +177,10 @@ void QCLI_Thread(void *Param)
 
    ULONG set_signal = 0;
    uint8_t Length;
+   #ifndef UART_PORT_CONTROL
+   char buf [128];
+   char *buffer = buf;
+   #endif
 
    PAL_CONSOLE_WRITE_STRING_LITERAL("QCLI DAM Thread Started");
    PAL_CONSOLE_WRITE_STRING_LITERAL(PAL_OUTPUT_END_OF_LINE_STRING);
@@ -207,10 +221,20 @@ void QCLI_Thread(void *Param)
          }
 
          /* Send the next buffer's data to QCLI for processing. */
+         #ifndef UART_PORT_CONTROL
+         memset(buffer, 0, 128);
+         memset((char *)PAL_Context_D.Rx_Buffer, 0, 128);
+         while (qapi_USB_Read(&buffer,128) == QAPI_OK)
+         {
+             strcat((char *)PAL_Context_D.Rx_Buffer,buffer);
+         }
+         #endif
+         if ((char *)PAL_Context_D.Rx_Buffer != NULL) {
          QCLI_Process_Input_Data(Length, &(PAL_Context_D.Rx_Buffer[0]));
-
+         }
+         #ifdef UART_PORT_CONTROL
          qapi_UART_Receive(PAL_Context_D.uart_handle, (char *)&(PAL_Context_D.Rx_Buffer[0]), PAL_RECIEVE_BUFFER_SIZE, (void*)1);
-
+         #endif
          /* Adjust the indexes for the received data. */
          PAL_Context_D.Rx_Out_Index += Length;
          if(PAL_Context_D.Rx_Out_Index == PAL_RECIEVE_BUFFER_SIZE)
@@ -240,6 +264,32 @@ void QCLI_Thread(void *Param)
     - true if the platform was initialized successfully.
     - false if initialization failed.
 */
+#ifndef UART_PORT_CONTROL
+static void usb_callback(uint16_t num_bytes){
+  int Length = num_bytes;
+  if (is_usb_connect == false)
+  {
+      is_usb_connect = true;
+  }
+  if(PAL_Context_D.Rx_Buffers_Free != 0)
+  {
+      if(Length > PAL_Context_D.Rx_Buffers_Free)
+      {
+         Length = PAL_Context_D.Rx_Buffers_Free;
+      }
+      PAL_Context_D.Rx_In_Index += Length;
+      if(PAL_Context_D.Rx_In_Index == PAL_RECIEVE_BUFFER_SIZE)
+      {
+         PAL_Context_D.Rx_In_Index = 0;
+      }
+      PAL_Context_D.Rx_Buffers_Free -= Length;
+      if(Length > 0)
+      {
+          tx_event_flags_set(&(PAL_Context_D.Rx_Event), PAL_RECEIVE_EVENT_MASK, TX_OR);
+      }
+  }
+}
+#endif
 static qbool_t PAL_Initialize(void)
 {
 
@@ -275,7 +325,7 @@ static qbool_t PAL_Initialize(void)
    }
 
 #endif     /* ----- #if 0 : If0Label_1 ----- */
-
+#ifdef UART_PORT_CONTROL
    open_properties.parity_Mode = QAPI_UART_NO_PARITY_E;
    open_properties.num_Stop_Bits= QAPI_UART_1_0_STOP_BITS_E;
    open_properties.baud_Rate   = 115200;
@@ -292,7 +342,14 @@ static qbool_t PAL_Initialize(void)
    }else{
        qapi_UART_Receive(PAL_Context_D.uart_handle, (char *)&(PAL_Context_D.Rx_Buffer[PAL_Context_D.Rx_In_Index]), PAL_RECIEVE_BUFFER_SIZE, (void*)1);
    }
-
+#else
+   usb_status = qapi_USB_Open();
+   if (usb_status == QAPI_OK) {
+       static qapi_USB_App_Rx_Cb_t pcall;
+       pcall = usb_callback;
+       qapi_USB_Ioctl(QAPI_USB_RX_CB_REG_E, (qapi_USB_Ioctl_Param_t *)&pcall);
+   }
+#endif
 #if  0     /* ----- #if 0 : If0Label_2 ----- */
    qapi_FS_Write(filehandle, "open uart 001", 13, &bytes);
    qapi_FS_Close(filehandle);
@@ -345,7 +402,13 @@ void PAL_Console_Write(uint32_t Length, const uint8_t *Buffer)
      if(send_buf != NULL)
      {
         memcpy(send_buf, (char*)Buffer, Length);
+        #ifdef UART_PORT_CONTROL
         qapi_UART_Transmit(PAL_Context_D.uart_handle,send_buf, Length, (void*)send_buf);
+        #else
+            if (((usb_status == QAPI_OK) || ( usb_status == QAPI_ERR_ALREADY_DONE)) && (is_usb_connect == true)) {
+                qapi_USB_Write(send_buf,Length);
+            }
+        #endif
      }
      qapi_Timer_Sleep(2,QAPI_TIMER_UNIT_MSEC,true);
    }

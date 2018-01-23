@@ -286,13 +286,13 @@ typedef struct {
  * @endverbatim
  *
  */
+/*SIMCOM zhangwei 2018-01-11 fixed iot qapi bug  at ticket/26 begin*/
 /*SIMCOM zhangwei 2017-09-20 fixed bug begin*/
 #define IOT_MQTT_Publish(handle, topic_name, topic_msg)\
-    ((int) (_txm_module_system_call12)(TXM_QAPI_IOT_MQTT_PUBLISH,\
-    (ULONG) handle,(ULONG) topic_name, (ULONG) topic_msg, (ULONG) 0,(ULONG) 0,\
-    (ULONG) 0,(ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, \
-    (ULONG) 0))
+    ((int) (_txm_module_kernel_call_dispatcher)(TXM_QAPI_IOT_MQTT_PUBLISH,\
+    (ULONG) handle,(ULONG) topic_name, (ULONG) topic_msg))
 /*SIMCOM zhangwei 2017-09-20 fixed bug end*/
+/*SIMCOM zhangwei 2018-01-11 fixed iot qapi bug  at ticket/26 end*/
 #elif defined QAPI_TXM_SOURCE_CODE
 
 /**

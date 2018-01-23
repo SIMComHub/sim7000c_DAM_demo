@@ -14,7 +14,8 @@
  *
  * @brief 
  *
- * @details This module provides the definations to configure Real Time Clock (RTC) Alarm Pheripheral  in Power Management IC (PMIC).  
+ * @details This module provides the definations to configure the real-time clock
+   (RTC) alarm pheripheral in the power management IC (PMIC).  
  * 
  * @}
  *  
@@ -67,41 +68,50 @@ extern "C" {
 /* =========================================================================
                          TYPE DEFINITIONS
 ========================================================================= */
-// Real-time clock command type
+
+/** @addtogroup qapi_pmapp_rtc
+@{ */
+
+/** Real-time clock command type.
+*/
 typedef enum
 {
-   QAPI_PM_RTC_SET_CMD_E,
-   QAPI_PM_RTC_GET_CMD_E,
+   QAPI_PM_RTC_SET_CMD_E,  /**< Set command. */
+   QAPI_PM_RTC_GET_CMD_E,  /**< Get command. */
    QAPI_PM_RTC_INVALID_CMD_E
 }qapi_PM_Rtc_Cmd_Type_t;
 
-// Real-time clock display mode type
+/** Real-time clock display mode type.
+*/
 typedef enum
 {
-   QAPI_PM_RTC_12HR_MODE_E,
-   QAPI_PM_RTC_24HR_MODE_E,
+   QAPI_PM_RTC_12HR_MODE_E,  /**< 12 hour display mode. */
+   QAPI_PM_RTC_24HR_MODE_E,  /**< 24 hour display mode. */
    QAPI_PM_RTC_INVALID_MODE_E
 }qapi_PM_Rtc_Display_Type_t;
 
-// PMIC's version of the Julian time structure
+/** PMIC's version of the Julian time structure.
+*/
 typedef struct qapi_PM_Rtc_Julian_Type_s
 {
-   uint64_t year;            // Year [1980..2100]
-   uint64_t month;           // Month of year [1..12]
-   uint64_t day;             // Day of month [1..31]
-   uint64_t hour;            // Hour of day [0..23]
-   uint64_t minute;          // Minute of hour [0..59]
-   uint64_t second;          // Second of minute [0..59]
-   uint64_t day_of_week;     // Day of the week [0..6] Monday..Sunday
+   uint64_t year;            /**< Year [1980 to 2100]. */
+   uint64_t month;           /**< Month of the year [1 to 12]. */
+   uint64_t day;             /**< Day of the month [1 to 31]. */
+   uint64_t hour;            /**< Hour of the day [0 to 23]. */
+   uint64_t minute;          /**< Minute of the hour [0 to 59]. */
+   uint64_t second;          /**< Second of the minute [0 to 59]. */
+   uint64_t day_of_week;     /**< Day of the week [0 to 6]; Monday through Sunday. */
 } qapi_PM_Rtc_Julian_Type_t;
 
-// RTC alarms
+/** RTC alarms. */
 typedef enum
 {
-   QAPI_PM_RTC_ALARM_1_E       = 0x01,
-   QAPI_PM_RTC_ALL_ALARMS_E    = 0x01,       // This is used for referring collectively to all of the supported alarms
+   QAPI_PM_RTC_ALARM_1_E       = 0x01,  /**< Alarm 1. */
+   QAPI_PM_RTC_ALL_ALARMS_E    = 0x01,  /**< Refers collectively to all supported alarms. */
    QAPI_PM_RTC_ALARM_INVALID_E
 } qapi_PM_Rtc_Alarm_Type_t;
+
+/** @} */ /* end_addtogroup qapi_pmapp_rtc */
 
 #ifdef  QAPI_TXM_MODULE
 
@@ -134,52 +144,48 @@ typedef enum
                    KERNEL_Mode_DEFS
 ===========================================================================*/
 
+/** @addtogroup qapi_pmapp_rtc
+@{ */
+
 /*===========================================================================
 FUNCTION   qapi_PM_Rtc_Init                                 
-
-DESCRIPTION
-   This function is used for initializing RTC after a "power reset".
-
-PARAMETERS
-   None.
-
-RETURN VALUE
-   Type: qapi_Status_t
-   - Possible values:
-     - QAPI_OK                        -->  Operation succeeded
-     - QAPI_ERR_NOT_SUPPORTED         -->  Feature_Not_Supported
-	 - QAPI_ERROR					  -->  For Any Other Errors
-
 ===========================================================================*/
+/**
+
+  Initializes the RTC after a power reset.
+
+@return
+   Possible values (see @xhyperref{hdr:QAPIStatust,qapi\_Status\_t}):
+   - QAPI_OK                  -- Operation succeeded.
+   - QAPI_ERR_NOT_SUPPORTED   -- Feature is not supported.
+   - QAPI_ERROR               -- Any other errors.
+*/
 qapi_Status_t
 qapi_PM_Rtc_Init(void);
 /*~ FUNCTION qapi_PM_Rtc_Init */
 
 /*===========================================================================
 FUNCTION   qapi_PM_Set_Rtc_Display_Mode                       
+===========================================================================*/
+/**
 
-DESCRIPTION
-   This function configures the real time clock display mode
-   (24 or 12 hour mode). RTC defaults to 24 hr mode on phone power up and
+   Configures the real time clock display mode (24 or 12 hour mode).
+   The RTC defaults to 24 hr mode on phone power up and
    remains so until it is set to 12 hr mode explicitly using
    qapi_PM_Set_Rtc_Display_Mode().
 
-PARAMETERS
-   1) Name: mode
-      - New RTC time display mode to be used.
-      Type: qapi_PM_Rtc_Display_Type_t
-      - Valid values:
-        QAPI_PM_RTC_12HR_MODE_E,
-		QAPI_PM_RTC_24HR_MODE_E,
+@param[in] mode  New RTC time display mode to be used. \n
+                 Valid values (see #qapi_PM_Rtc_Display_Type_t):
+                 - QAPI_PM_RTC_12HR_MODE_E
+                 - QAPI_PM_RTC_24HR_MODE_E @tablebulletend
 
-RETURN VALUE
-   Type: qapi_Status_t
-   - Possible values:
-     - QAPI_OK                        -->  Operation succeeded
-     - QAPI_ERR_INVALID_PARAM         -->  Invalid Parameter
-	 - QAPI_ERR_NOT_SUPPORTED         -->  Feature_Not_Supported
-	 - QAPI_ERROR					  -->  For Any Other Errors
-===========================================================================*/
+@return
+   Possible values (see @xhyperref{hdr:QAPIStatust,qapi\_Status\_t}):
+   - QAPI_OK                   -- Operation succeeded.
+   - QAPI_ERR_INVALID_PARAM    -- Invalid parameter.
+   - QAPI_ERR_NOT_SUPPORTED    -- Feature is not spported.
+   - QAPI_ERROR                -- Any other errors.
+*/
 qapi_Status_t
 qapi_PM_Set_Rtc_Display_Mode(qapi_PM_Rtc_Display_Type_t mode);
 /*~ FUNCTION qpai_PM_Set_Rtc_Display_Mode */
@@ -187,46 +193,32 @@ qapi_PM_Set_Rtc_Display_Mode(qapi_PM_Rtc_Display_Type_t mode);
 
 /*===========================================================================
 FUNCTION   qapi_PM_Rtc_Read_Cmd    // confirm about RW                               
+===========================================================================*/
 
-DESCRIPTION
-   This function reads/writes the time and date from/to the PMIC RTC.
+/**
+   Reads/writes the time and date from/to the PMIC RTC.
    The time/date format must be in 24 or 12 Hr mode depending on
-   what mode, RTC has been initialized with; please refer to the description of
+   in which mode the RTC was initialized. See the description of
    qpai_PM_Set_Rtc_Display_Mode() for details.
 
-   24 Hr and 12 Hr mode displays are related as shown below:
+   24 hr and 12 hr mode displays are:
 
-   24 HR-00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-   12 HR-12 01 02 03 04 05 06 07 08 09 10 11 32 21 22 23 24 25 26 27 28 29 30 31
+   24 HR -- 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 \n
+   12 HR -- 12 01 02 03 04 05 06 07 08 09 10 11 32 21 22 23 24 25 26 27 28 29 30 31
 
 
-PARAMETERS
-   
-   1) Name: qapi_current_time_ptr
-      - Depending on the command, this function will use the structure
-        pointer to update or return the current time in the RTC.
-      Type: qapi_PM_Rtc_Julian_Type_t*
-         uint64_t year         = Year [1980..2100]
-         uint64_t month        = Month of year [1..12]
-         uint64_t day          = Day of month [1..31]
-         uint64_t hour         = Depending on the display mode. Refer to the
-                                 function description.
-         uint64_t minute       = Minute of hour [0..59]
-         uint64_t second       = Second of minute [0..59]
-         uint64_t day_of_week  = Day of the week [0..6] Monday through Sunday
-
-         Note: 'day_of_week' is not required for setting the current time but
+@param[in] qapi_current_time_ptr  Depending on the command, this function will use the
+        #qapi_PM_Rtc_Julian_Type_t pointer to update or return the current time in the RTC.
+         @note day_of_week is not required for setting the current time, but it
                returns the correct information when retrieving time from the RTC.
 
-RETURN VALUE
-   Type: qapi_Status_t
-   - Possible values:
-     - QAPI__SUCCESS            -->  SUCCESS
-     - QAPI_ERR_INVALID_PARAM   -->  Invalid Parameter
-     - QAPI_ERROR				-->  For Any Other Errors 
+@return
+   Possible values (see @xhyperref{hdr:QAPIStatust,qapi\_Status\_t}):
+   - QAPI_OK                 -- Operation succeeded.
+   - QAPI_ERR_INVALID_PARAM  -- Invalid parameter.
+   - QAPI_ERROR              -- Any other errors.
      
-
-===========================================================================*/
+*/
 qapi_Status_t
 qapi_PM_Rtc_Read_Cmd(qapi_PM_Rtc_Julian_Type_t   *qapi_current_time_ptr);
 /*~ FUNCTION qapi_PM_Rtc_Read_Cmd */
@@ -235,49 +227,36 @@ qapi_PM_Rtc_Read_Cmd(qapi_PM_Rtc_Julian_Type_t   *qapi_current_time_ptr);
 
 /*===========================================================================
 FUNCTION   qapi_PM_Rtc_Alarm_RW_Cmd                             
-DESCRIPTION
-   This function reads/writes the time and date from/to the PMIC RTC.
+==========================================================================*/
+
+/**
+   Reads/writes the time and date from/to the PMIC RTC.
    The time/date format must be in 24 or 12 Hr mode depending on
-   what mode, RTC has been initialized with; please refer to the description of
+   in which mode the RTC was initialized. See the description of
    qpai_PM_Set_Rtc_Display_Mode() for details.
 
-   24 Hr and 12 Hr mode displays are related as shown below:
+   24 hr and 12 hr mode displays are:
 
-   24 HR-00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-   12 HR-12 01 02 03 04 05 06 07 08 09 10 11 32 21 22 23 24 25 26 27 28 29 30 31
+   24 HR -- 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 \n
+   12 HR -- 12 01 02 03 04 05 06 07 08 09 10 11 32 21 22 23 24 25 26 27 28 29 30 31
 
 
-PARAMETERS
-   1) Name: cmd
-      - Indicates if we want to set/get the current time in RTC.
-      Type: qapi_PM_Rtc_Cmd_Type_t
-      - Valid Values:
-         QAPI_PM_RTC_SET_CMD_E
-         QAPI_PM_RTC_GET_CMD_E
-
-   2) Name: qapi_alarm_time_ptr
-      - Depending on the command, this function will use the structure
-        pointer to update or return the Alaram time in the RTC.
-      Type: qapi_PM_Rtc_Julian_Type_t*
-         uint64_t year         = Year [1980..2100]
-         uint64_t month        = Month of year [1..12]
-         uint64_t day          = Day of month [1..31]
-         uint64_t hour         = Depending on the display mode. Refer to the
-                                 function description.
-         uint64_t minute       = Minute of hour [0..59]
-         uint64_t second       = Second of minute [0..59]
-         uint64_t day_of_week  = Day of the week [0..6] Monday through Sunday
-
-         Note: 'day_of_week' is not required for setting the current time but
+@param[in] cmd  Indicates whether to set or get the current time in the RTC. \n
+        Valid values (see qapi_PM_Rtc_Cmd_Type_t):
+        - QAPI_PM_RTC_SET_CMD_E
+        - QAPI_PM_RTC_GET_CMD_E @tablebulletend
+@param[in] what_alarm  Alarm type. See #qapi_PM_Rtc_Alarm_Type_t.
+@param[in] qapi_alarm_time_ptr  Depending on the command, this function will use the structure
+           #qapi_PM_Rtc_Julian_Type_t pointer to update or return the alaram time in the RTC.
+           @note day_of_week is not required for setting the current time, but it
                returns the correct information when retrieving time from the RTC.
 
-RETURN VALUE
-   Type: qapi_Status_t
-   - Possible values:
-	 - QAPI__SUCCESS            -->  SUCCESS
-     - QAPI_ERR_INVALID_PARAM   -->  Invalid Parameter
-     - QAPI_ERROR				-->  For Any Other Errors 
-===========================================================================*/
+@return
+   Possible values (see @xhyperref{hdr:QAPIStatust,qapi\_Status\_t}):
+   - QAPI_OK                 -- Operation succeeded.
+   - QAPI_ERR_INVALID_PARAM  -- Invalid parameter.
+   - QAPI_ERROR              -- Any other errors.
+*/
 qapi_Status_t qapi_PM_Rtc_Alarm_RW_Cmd(
    qapi_PM_Rtc_Cmd_Type_t       cmd,
    qapi_PM_Rtc_Alarm_Type_t     what_alarm,
@@ -294,5 +273,7 @@ qapi_Status_t qapi_PM_Rtc_Alarm_RW_Cmd(
 } /* closing brace for extern "C" */
 
 #endif
+
+/** @} */ /* end_addtogroup qapi_pmapp_rtc */
 
 #endif /* __QAPI_PMAPP_RTC_H__  */

@@ -30,7 +30,7 @@ when       who     what, where, why
 /*==================================================================================================
                                            INCLUDE FILES
 ==================================================================================================*/
-//#include "qurt_txm_qapi_fwk.h"
+//#include "qurt_txm_qapi_fwk.h"                /* Jumping delete it */
 #include "qapi_txm_base.h"
 
 

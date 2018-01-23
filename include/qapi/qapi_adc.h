@@ -1,33 +1,32 @@
 #ifndef QAPI_ADC_H
 #define QAPI_ADC_H
-/************************************************************************
+/**
  * @file qapi_adc.h
  *
  * @brief  Contains QAPI driver definitions
  *
- * @addtogroup qapi_adc
+ * @addtogroup qapi_adc_apis
  * @{
  *
- * An analog-to-digital converter (ADC) allows an analog signal to be
+ * The analog-to-digital converter (ADC) allows an analog signal to be
  * sampled and digitally represented. The SoC features an on-die
  * ADC that supports reading multiple channels. The ADC can perform single-
  * shot and recurring measurements.
  *
- * ADC is configurable via static parameters.Please
- * see the ADC tunable board file for the statically defined
+ * The ADC is configurable via static parameters. See
+ * the ADC tunable board file for the statically defined
  * parameters.
  *
  * This programming interface allows client software to configure
- * channels, perform single readings, sets threshold if the channel
- *  is a ADC TM channel before reading the channel, and get ADC data samples.
+ * channels, perform single readings, set a threshold if the channel
+ * is an ADC TM channel before reading the channel, and get ADC data samples.
  * The code snippet below shows an example usage.
  *
- * @code {.c}
- *
+ * @code
  *
  *  * The code snippet below demonstrates use of this interface. The example
- *  * below opens ADC to obtain a handle,Sets the thresholds if the channel is a ADC TM channel, reads
- *  * each ADC channel, and then closes the handle.
+ *  * below opens ADC to obtain a handle, sets the thresholds if the channel
+ *  * is an ADC TM channel, reads each ADC channel, and then closes the handle.
  *
  *   qapi_Status_t status;
  *   qapi_ADC_Handle_t handle;
@@ -49,25 +48,29 @@
  *   if (status != QAPI_OK) { ... }
  *
  *   //To read ADC channels
- *   status=qapi_ADC_Get_Input_Properties(&handle, Channel_Name, Channel_Name_Size, Properties);
+ *   status=qapi_ADC_Get_Input_Properties(&handle, Channel_Name, 
+ *                                Channel_Name_Size, Properties);
  *   if (status != QAPI_OK) { ... }
  *
  *   // To read and configure ADC TM channels
- *   status=qapi_ADC_TM_Get_Input_Properties(&handle, Channel_Name, Channel_Name_Size, Properties_TM);
+ *   status=qapi_ADC_TM_Get_Input_Properties(&handle, Channel_Name,
+ *                                Channel_Name_Size, Properties_TM);
  *   if (status != QAPI_OK) { ... }
  *   else
  *   {
  *     status=qapi_ADC_Get_Range(&handle, channel, ADC_TM_Range);
  *     if (status != QAPI_OK) { ... }
  *     
- *     status=qapi_ADC_Set_Amp_Threshold(&handle, ADC_TM_Params, Threshold_Type, Threshold_Desired, TM_Threshold_Set):
+ *     status=qapi_ADC_Set_Amp_Threshold(&handle, ADC_TM_Params,
+ *              Threshold_Type, Threshold_Desired, TM_Threshold_Set):
  *     if (status != QAPI_OK) { ... }
  *     
  *     //Enable Thresholds (Enable = 1)
  *     status=qapi_ADC_TM_Enable_Thresholds(&handle, Enable, Threshold_Type);
  *     if (status != QAPI_OK) { ... 
  *
- *     status=qapi_ADC_TM_Set_Tolerance(&handle, TM_Params_Type_Ptr, Lower_Tolerance, Higher_Tolerance);
+ *     status=qapi_ADC_TM_Set_Tolerance(&handle, TM_Params_Type_Ptr,
+ *                                     Lower_Tolerance, Higher_Tolerance);
  *     if (status != QAPI_OK) { ... }
  *     
  *     //Disable Thresholds (Enable = 0) 
@@ -89,11 +92,13 @@
  * @endcode
  *
  * @}
- * 
+ */
+ /* 
  * Copyright (C) 2017 QUALCOMM Technologies, Inc.
- *
- *
- ***********************************************************************/
+ * All Rights Reserved.
+ * Confidential and Proprietary - Qualcomm Technologies, Inc.
+*/
+
 /*===========================================================================
 
                         EDIT HISTORY FOR MODULE
@@ -211,11 +216,11 @@ when         who   what, where, why
 *  @param[in]  Attributes  Reserved parameter.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified. \n
-*  QAPI_ERR_NO_MEMORY     -- No memory available to support this operation. \n
-*  QAPI_ERR_NO_RESOURCE   -- No more handles are available.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_ERR_NO_MEMORY     -- No memory available to support this operation.
+*  - QAPI_ERR_NO_RESOURCE   -- No more handles are available.
 */
 qapi_Status_t qapi_ADC_Open
 (
@@ -230,7 +235,7 @@ qapi_Status_t qapi_ADC_Open
 /**
 *  Gets the ADC channel configuration.
 *
-*  This function is used to get properties of ADC channels
+*  This function is used to get properties of ADC channels.
 *
 *  @param[in]  Handle           Handle provided by qapi_ADC_Open().
 *  @param[in]  Channel_Name_Ptr Pointer to ADC channel name pointer.
@@ -238,9 +243,9 @@ qapi_Status_t qapi_ADC_Open
 *  @param[out] Properties_Ptr   ADC channel configuration.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified. \n
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_ADC_Get_Input_Properties
 (
@@ -265,9 +270,9 @@ qapi_Status_t qapi_ADC_Get_Input_Properties
 *  @param[out] Result_Ptr       ADC reading result structure.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_ADC_Read_Channel
 (
@@ -288,9 +293,9 @@ qapi_Status_t qapi_ADC_Read_Channel
 *  @param[out] Properties_Ptr   ADC TM channel configuration.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_ADC_TM_Get_Input_Properties
 (
@@ -315,9 +320,9 @@ qapi_Status_t qapi_ADC_TM_Get_Input_Properties
 *  @param[out] ADC_TM_Range_Ptr   Pointer to the channel range.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_ADC_Get_Range
 (
@@ -326,7 +331,7 @@ qapi_Status_t qapi_ADC_Get_Range
    qapi_AdcTM_Range_Type_t *ADC_TM_Range_Ptr
 );
 
-/**============================================================================
+/*============================================================================
                 qapi_ADC_Set_Amp_Threshold
 ============================================================================*/
 /**
@@ -352,9 +357,9 @@ qapi_Status_t qapi_ADC_Get_Range
 *  @param[out] TM_Threshold_Set_Ptr     Pointer to threshold value actually set.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_ADC_Set_Amp_Threshold
 (
@@ -384,9 +389,9 @@ qapi_Status_t qapi_ADC_Set_Amp_Threshold
 *  @param[in] Threshold_Type   Type of threshold.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_ADC_TM_Enable_Thresholds
 (
@@ -432,9 +437,9 @@ qapi_Status_t qapi_ADC_TM_Enable_Thresholds
 *  @param[in] Higher_Tolerance  Pointer to higher tolerance.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_ADC_TM_Set_Tolerance
 (
@@ -454,9 +459,9 @@ qapi_Status_t qapi_ADC_TM_Set_Tolerance
 *  @param[in] keep_enabled   Reserved parameter.
 *
 *  @return
-*  QAPI_OK                -- Call succeeded. \n
-*  QAPI_ERROR             -- Call failed. \n
-*  QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
+*  - QAPI_OK                -- Call succeeded.
+*  - QAPI_ERROR             -- Call failed.
+*  - QAPI_ERR_INVALID_PARAM -- Invalid parameters were specified.
 */
 qapi_Status_t qapi_ADC_Close
 (

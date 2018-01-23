@@ -38,11 +38,6 @@ extern "C" {
 
 /*** Maximum IDs for dataservices is defined by macro TXM_QAPI_DATA_SERVICES_NUM_IDS ***/
 
-#define  TXM_QAPI_IOT_BASE                        TXM_QAPI_FS_BASE + 30
-/*SIMCOM zhangwei at 2017-11-10 for iot  hal  include begin */
-#define  TXM_QAPI_IOT_NUM_IDS                     29
-#define  TXM_QAPI_IOT_HAL_BASE                           (TXM_QAPI_IOT_BASE +TXM_QAPI_IOT_NUM_IDS + 1)
-/*SIMCOM zhangwei at 2017-11-10 for iot  hal  include end */
 #ifdef __cplusplus
 } /* closing brace for extern "C" */
 #endif

@@ -39,7 +39,7 @@ when         who   what, where, why
  
 /* QAPI TSENS Macros */
  
-/* Error macros defined for QAPI errors */
+/* Error macros defined for QAPI errors. */
 #define ___QAPI_ERROR_TSENS(x)  ((qapi_Status_t)(__QAPI_ERROR(QAPI_MOD_BSP_TSENS,  x)))
 
 /* TSENS hardware sensor is not calibrated. */
@@ -84,8 +84,8 @@ typedef enum
 typedef struct
 {
    qapi_TSENS_ThresholdType_t eThreshold;  /**< Type of threshold that was triggered. */
-   uint32_t uSensor;                   /**< Sensor that was triggered. */
-   int32_t nTriggeredDegC;                     /**< Temperature value that was triggered. */
+   uint32_t uSensor;                       /**< Sensor that was triggered. */
+   int32_t nTriggeredDegC;                 /**< Temperature value that was triggered. */
 }  qapi_TSENS_CallbackPayloadType_t;
 
 /** TSENS callback function type. */
@@ -95,7 +95,7 @@ typedef void (*QAPI_Tsens_Threshold_Cb_Type)
    const qapi_TSENS_CallbackPayloadType_t *pPayload
 );
 
-/** Tsens temperature result structure */
+/** TSENS temperature result structure. */
 typedef struct
 {
    int32_t deg_c;      /**< Temperature in degrees Celsius. @newpagetable */

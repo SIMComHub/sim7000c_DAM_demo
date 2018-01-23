@@ -38,7 +38,10 @@ extern "C" {
 #define TXM_QAPI_LOCATION_PAUSE_GEOFENCES           TXM_QAPI_LOCATION_BASE + 12
 #define TXM_QAPI_LOCATION_RESUME_GEOFENCES          TXM_QAPI_LOCATION_BASE + 13
 
- /*
+/** @addtogroup qapi_location
+@{ */
+
+ /**
  * GNSS location error codes.
  */
 typedef enum {
@@ -96,7 +99,7 @@ typedef enum {
     QAPI_LOCATION_CAPABILITIES_TIME_BASED_BATCHING_BIT =     (1 << 1),  /**< Capabilities time-based batching bit. */
     QAPI_LOCATION_CAPABILITIES_DISTANCE_BASED_TRACKING_BIT = (1 << 2),  /**< Capabilities distance-based tracking bit. */
     QAPI_LOCATION_CAPABILITIES_DISTANCE_BASED_BATCHING_BIT = (1 << 3),  /**< Capabilities distance-based batching bit. */
-    QAPI_LOCATION_CAPABILITIES_GEOFENCE_BIT =                (1 << 4),  /**< Capabilities Geofence bit. */
+    QAPI_LOCATION_CAPABILITIES_GEOFENCE_BIT =                (1 << 4),  /**< Capabilities Geofence bit. @newpage */
 } qapi_Location_Capabilities_Mask_Bits_t;
 
 /** Structure for location information. */
@@ -111,41 +114,60 @@ typedef struct {
     float bearing;                      /**< Bearing in degrees; range: 0 to 360. */
     float accuracy;                     /**< Accuracy in meters. */
     float verticalAccuracy;             /**< Vertical accuracy in meters. */
-    float speedAccuracy;                /**< Speed Accuracy in meters/second. */
+    float speedAccuracy;                /**< Speed accuracy in meters/second. */
     float bearingAccuracy;              /**< Bearing accuracy in degrees (0 to 359.999). */
 } qapi_Location_t;
 
 /** Structure for location options. */
 typedef struct {
-    size_t size;          /**< Size. Set to the size of LocationOptions. */
-    uint32_t minInterval; /**< Minimum interval in milliseconds. */
-    uint32_t minDistance; /**< Minimum distance in meters. */
+    size_t size;          /**< Size. Set to the size of #qapi_Location_Options_t. */
+    uint32_t minInterval; /**<  There are three different interpretations of this field, 
+                                depending if minDistance is 0 or not:
+                                1. Time-based tracking (minDistance = 0). minInterval is the minimum 
+                                time interval in milliseconds that must elapse between final position reports.
+                                2. Distance-based tracking (minDistance > 0). minInterval is the
+                                maximum time period in milliseconds after the minimum distance
+                                criteria has been met within which a location update must be provided. 
+                                If set to 0, an ideal value will be assumed by the engine.
+                                3. Batching. minInterval is the minimum time interval in milliseconds that 
+                                must elapse between position reports.
+                                */
+    uint32_t minDistance; /**< Minimum distance in meters that must be traversed between position reports. 
+                               Setting this interval to 0 will be a pure time-based tracking/batching.
+                               */
 } qapi_Location_Options_t;
 
-/** Structure for Geofence option. */
+/** Structure for Geofence options. */
 typedef struct {
-    size_t size;                                /**< Size. Set to the size of qapi_Geofence_Option_t. */
-    qapi_Geofence_Breach_Mask_t breachTypeMask; /**< Bitwise OR of qapi_Geofence_Breach_Mask_Bits_t bits. */
-    uint32_t responsiveness;                    /**< Responsiveness in milliseconds. */
-    uint32_t dwellTime;                         /**< Dwell time in seconds. */
+    size_t size;                                /**< Size. Set to the size of #qapi_Geofence_Option_t. */
+    qapi_Geofence_Breach_Mask_t breachTypeMask; /**< Bitwise OR of #qapi_Geofence_Breach_Mask_Bits_t bits. */
+    uint32_t responsiveness;                    /**< Specifies in milliseconds the user-defined rate of detection for a Geofence
+                                                     breach. This may impact the time lag between the actual breach event and
+                                                     when it is reported. The gap between the actual breach and the time it 
+                                                     is reported depends on the user setting. The power implication is 
+                                                     inversely proportional to the responsiveness value set by the user.
+                                                     The higher the responsiveness value, the lower the power implications, 
+                                                     and vice-versa. */
+    uint32_t dwellTime;                         /**< Dwell time is the time in milliseconds a user spends in the Geofence before 
+                                                     a dwell event is sent. */
 } qapi_Geofence_Option_t;
 
-/** Structure for Geofence info. */
+/** Structure for Geofence information. */
 typedef struct {
-    size_t size;      /**< Size. Set to the size of qapi_Geofence_Info_t. */
-    double latitude;  /**< Latitude in degrees. */
-    double longitude; /**< Longitude in degrees. */
-    double radius;    /**< Radius in meters. */
+    size_t size;      /**< Size. Set to the size of #qapi_Geofence_Info_t. */
+    double latitude;  /**< Latitude of the center of the Geofence in degrees. */
+    double longitude; /**< Longitude of the center of the Geofence in degrees. */
+    double radius;    /**< Radius of the Geofence in meters. */
 } qapi_Geofence_Info_t;
 
 /** Structure for Geofence breach notification. */
 typedef struct {
-    size_t size;                    /**< Size. Set to the size of qapi_Geofence_Breach_Notification_t. */
-    size_t count;                   /**< Number of IDs in array. */
+    size_t size;                    /**< Size. Set to the size of #qapi_Geofence_Breach_Notification_t. */
+    size_t count;                   /**< Number of IDs in the array. */
     uint32_t* ids;                  /**< Array of IDs that have been breached. */
     qapi_Location_t location;       /**< Location associated with a breach. */
     qapi_Geofence_Breach_t type;    /**< Type of breach. */
-    uint64_t timestamp;             /**< Timestamp of the breach.*/
+    uint64_t timestamp;             /**< Timestamp of the breach. */
 } qapi_Geofence_Breach_Notification_t;
 
 /* GNSS Location Callbacks */
@@ -163,11 +185,12 @@ typedef void(*qapi_Capabilities_Callback)(
 );
 
 /**
-* @brief Response callback, which is used by tracking, batching, and
-         miscellanous APIs.
-         It is called for every tracking, batching, and miscellanous API.
+* @brief Response callback, which is used by all tracking, batching and
+         geofence APIs.
+         It is called for every tracking, batching and geofence API.
 
-  @param[in] err  Error; if not SUCCESS, the ID is not valid.
+  @param[in] err  #qapi_Location_Error_t associated with the request.
+                  If this is not QAPI_LOCATION_ERROR_SUCCESS then id is not valid.
   @param[in] id   ID to be associated with the request.
 
   @return None.
@@ -230,7 +253,7 @@ typedef void(*qapi_Batching_Callback)(
 
   @param[in] geofenceBreachNotification     Breach notification information.
 
-  @return None
+  @return None.
 */
 typedef void(*qapi_Geofence_Breach_Callback)(
     qapi_Geofence_Breach_Notification_t geofenceBreachNotification
@@ -254,7 +277,7 @@ typedef struct {
     /**< Geofence breach callback is optional. */
 } qapi_Location_Callbacks_t;
 
-/** Location client identifier */
+/** Location client identifier. */
 typedef uint32_t qapi_loc_client_id;
 
 #ifdef  QAPI_TXM_MODULE     // USER_MODE_DEFS
@@ -279,19 +302,19 @@ typedef uint32_t qapi_loc_client_id;
 UINT qapi_location_handler(UINT id, UINT a1, UINT a2, UINT a3, UINT a4, UINT a5, UINT a6, UINT a7, UINT a8, UINT a9, UINT a10, UINT a11, UINT a12);
 
 /**
-* @brief Initializes a location session and regristers the callbacks.
+* @brief Initializes a location session and registers the callbacks.
 
-  @param[out] pClientId  Pointer to client id type, where we return
-                         the unique identifier for this location client.
-  @param[in] pCallbacks  Pointer to the Structure with the callback
+  @param[out] pClientId  Pointer to client ID type, where the unique identifier
+                         for this location client is returned.
+  @param[in] pCallbacks  Pointer to the structure with the callback
                          functions to be registered.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_CALLBACK_MISSING if one of the mandatory
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_CALLBACK_MISSING -- One of the mandatory
             callback functions is missing. \n
-  QAPI_LOCATION_ERROR_GENERAL_FAILURE if there is an internal error. \n
-  QAPI_LOCATION_ERROR_ALREADY_STARTED if a location session has
+  QAPI_LOCATION_ERROR_GENERAL_FAILURE -- There is an internal error. \n
+  QAPI_LOCATION_ERROR_ALREADY_STARTED -- A location session has
             already been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Init(
@@ -299,14 +322,14 @@ qapi_Location_Error_t qapi_Loc_Init(
         const qapi_Location_Callbacks_t* pCallbacks);
 
 /**
-* @brief Deinitializes a location session.
+* @brief De-initializes a location session.
 
   @param[in] clientId  Client identifier for the location client to be
-                       de-initialized.
+                       deinitialized.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Deinit(
@@ -321,13 +344,21 @@ qapi_Location_Error_t qapi_Loc_Deinit(
 
   @param[in] clientId     Client identifier for the location client.
   @param[in] pOptions     Pointer to a structure containing the options: 
-                          - minInterval -- Minimum interval between fixes
-                          - minDistance -- Minimum distance to travel before reporting
+                          - minInterval -- There are two different interpretations of this field, 
+                                depending if minDistance is 0 or not:
+                                1. Time-based tracking (minDistance = 0). minInterval is the minimum 
+                                time interval in milliseconds that must elapse between final position reports.
+                                2. Distance-based tracking (minDistance > 0). minInterval is the
+                                maximum time period in milliseconds after the minimum distance
+                                criteria has been met within which a location update must be provided. 
+                                If set to 0, an ideal value will be assumed by the engine.
+                          - minDistance -- Minimum distance in meters that must be traversed between position 
+                                reports. Setting this interval to 0 will be a pure time-based tracking.
   @param[out] pSessionId   Pointer to the session ID to be returned.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Start_Tracking(
@@ -343,8 +374,8 @@ qapi_Location_Error_t qapi_Loc_Start_Tracking(
   @param[in] sessionId  ID of the session to be stopped.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Stop_Tracking(
@@ -358,12 +389,20 @@ qapi_Location_Error_t qapi_Loc_Stop_Tracking(
   @param[in] clientId   Client identifier for the location client.
   @param[in] sessionId  ID of the session to be changed.
   @param[in] pOptions   Pointer to a structure containing the options:
-                        - minInterval -- Minimum interval between fixes
-                        - minDistance -- Minimum distance to travel before reporting
+                          - minInterval -- There are two different interpretations of this field, 
+                                depending if minDistance is 0 or not:
+                                1. Time-based tracking (minDistance = 0). minInterval is the minimum 
+                                time interval in milliseconds that must elapse between final position reports.
+                                2. Distance-based tracking (minDistance > 0). minInterval is the
+                                maximum time period in milliseconds after the minimum distance
+                                criteria has been met within which a location update must be provided. 
+                                If set to 0, an ideal value will be assumed by the engine.
+                          - minDistance -- Minimum distance in meters that must be traversed between position 
+                                reports. Setting this interval to 0 will be a pure time-based tracking.@tablebulletend
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Update_Tracking_Options(
@@ -388,13 +427,15 @@ qapi_Location_Error_t qapi_Loc_Update_Tracking_Options(
 
   @param[in] clientId    Client identifier for the location client.
   @param[in] pOptions    Pointer to a structure containing the options:
-                         - minInterval -- Minimum interval between fixes
-                         - minDistance -- Minimum distance to travel before reporting
+                          - minInterval -- minInterval is the minimum time interval in milliseconds that 
+                                must elapse between position reports.
+                          - minDistance -- Minimum distance in meters that must be traversed between 
+                                position reports.@tablebulletend
   @param[out] pSessionId  Pointer to the session ID to be returned.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Start_Batching(
@@ -410,8 +451,8 @@ qapi_Location_Error_t qapi_Loc_Start_Batching(
   @param[in] sessionId  ID of the session to be stopped.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Stop_Batching(
@@ -425,12 +466,14 @@ qapi_Location_Error_t qapi_Loc_Stop_Batching(
   @param[in] clientId   Client identifier for the location client.
   @param[in] sessionId  ID of the session to be changed.
   @param[in] pOptions   Pointer to a structure containing the options:
-                        - minInterval -- Minimum interval between fixes
-                        - minDistance -- Minimum distance to travel before reporting
+                          - minInterval -- minInterval is the minimum time interval in milliseconds that 
+                                must elapse between position reports.
+                          - minDistance -- Minimum distance in meters that must be traversed between 
+                                position reports.@tablebulletend
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Update_Batching_Options(
@@ -446,11 +489,13 @@ qapi_Location_Error_t qapi_Loc_Update_Batching_Options(
 
   @param[in] clientId   Client identifier for the location client.
   @param[in] sessionId  ID of the session for which the number of locations is requested.
-  @param[in] count      Number of requested locations.
+  @param[in] count      Number of requested locations. The client can set this to 
+                        MAXINT to get all the batched locations. If set to 0 no location
+                        will be present in the callback function.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Get_Batched_Locations(
@@ -472,14 +517,14 @@ qapi_Location_Error_t qapi_Loc_Get_Batched_Locations(
                        - responsiveness in milliseconds
                        - dwellTime in seconds
   @param[in] pInfo     Array of structures containing the data:
-                       - latitude of the center of the Geofence in degrees 
-                       - longitude of the center of the Geofence in degrees
-                       - radius of the Geofence in meters
+                       - Latitude of the center of the Geofence in degrees 
+                       - Longitude of the center of the Geofence in degrees
+                       - Radius of the Geofence in meters
   @param[out] pIdArray  Array of IDs of Geofences to be returned.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Add_Geofences(
@@ -497,8 +542,8 @@ qapi_Location_Error_t qapi_Loc_Add_Geofences(
   @param[in] pIDs      Array of IDs of the Geofences to be removed.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Remove_Geofences(
@@ -512,14 +557,14 @@ qapi_Location_Error_t qapi_Loc_Remove_Geofences(
   @param[in] clientId  Client identifier for the location client.
   @param[in] count     Number of Geofences to be modified.
   @param[in] pIDs      Array of IDs of the Geofences to be modified.
-  @param[in] pOptions  Array of structures containing the options:
+  @param[in] options  Array of structures containing the options:
                        - breachTypeMask -- Bitwise OR of GeofenceBreachTypeMask bits
                        - responsiveness in milliseconds
-                       - dwellTime in seconds
+                       - dwellTime in seconds @tablebulletend
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Modify_Geofences(
@@ -538,8 +583,8 @@ qapi_Location_Error_t qapi_Loc_Modify_Geofences(
   @param[in] pIDs      Array of IDs of the Geofences to be paused.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Pause_Geofences(
@@ -556,8 +601,8 @@ qapi_Location_Error_t qapi_Loc_Pause_Geofences(
   @param[in] pIDs      Array of IDs of the Geofences to be resumed.
 
   @return
-  QAPI_LOCATION_ERROR_SUCCESS if successful. \n
-  QAPI_LOCATION_ERROR_NOT_INITIALIZED if no location session has
+  QAPI_LOCATION_ERROR_SUCCESS -- The operation was successful. \n
+  QAPI_LOCATION_ERROR_NOT_INITIALIZED -- No location session has
             been initialized.
 */
 qapi_Location_Error_t qapi_Loc_Resume_Geofences(
@@ -566,6 +611,8 @@ qapi_Location_Error_t qapi_Loc_Resume_Geofences(
         const uint32_t* pIDs);
 
 #endif // QAPI_TXM_MODULE
+
+/** @} */ /* end_addtogroup qapi_location */
 
 #ifdef __cplusplus
 }

@@ -55,11 +55,6 @@ when         who   what, where, why
 #define  TXM_QAPI_FS_ITER_NEXT                TXM_QAPI_FS_BASE + 15
 #define  TXM_QAPI_FS_ITER_CLOSE               TXM_QAPI_FS_BASE + 16
 #define  TXM_QAPI_FS_LAST_ERROR               TXM_QAPI_FS_BASE + 17
-/*SIMCOM Jumping fix ticket/149 at 17-09-04 begin*/
-#ifdef __SIMCOM_DAM__
-#define  TXM_QAPI_FS_UPDATE_APP               TXM_QAPI_FS_BASE + 24
-#endif
-/*SIMCOM Jumping fix ticket/149 at 17-09-04 end*/
 
 #ifdef  QAPI_TXM_MODULE
                
@@ -161,14 +156,6 @@ when         who   what, where, why
     (ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0,(ULONG) 0, (ULONG) 0, \
     (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
                                                                                                                                                                                                                                                                                                                
-/*SIMCOM Jumping fix ticket/149 at 17-09-04 begin*/
-#ifdef __SIMCOM_DAM__
-#define qapi_FS_Update_App()\
-    ((qapi_FS_Status_t) (_txm_module_system_call12)(TXM_QAPI_FS_UPDATE_APP,\
-    (ULONG) 0,(ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0,(ULONG) 0, (ULONG) 0, \
-    (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
-#endif
-/*SIMCOM Jumping fix ticket/149 at 17-09-04 end*/
 
 #elif defined QAPI_TXM_SOURCE_CODE
     

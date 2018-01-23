@@ -20,7 +20,6 @@ Qualcomm Atheros Confidential and Proprietary.
 
 #include "qapi_types.h"
 
-
 /** @addtogroup qapi_status
 @{ */
 
@@ -68,7 +67,7 @@ typedef int32_t qapi_Status_t;
  * The following definitions represent the status codes common to all of
  * the QAPI modules.
  */
-#define QAPI_OK                              ((qapi_Status_t)(0))                               /**< Success                   */
+#define QAPI_OK                              ((qapi_Status_t)(0))                               /**< Success                    */
 #define QAPI_ERROR                           ((qapi_Status_t)(__QAPI_ERROR(QAPI_MOD_BASE,  1))) /**< General error             */
 #define QAPI_ERR_INVALID_PARAM               ((qapi_Status_t)(__QAPI_ERROR(QAPI_MOD_BASE,  2))) /**< Invalid parameter         */
 #define QAPI_ERR_NO_MEMORY                   ((qapi_Status_t)(__QAPI_ERROR(QAPI_MOD_BASE,  3))) /**< Memory allocation error   */
@@ -82,6 +81,8 @@ typedef int32_t qapi_Status_t;
 #define QAPI_ERR_EXISTS                      ((qapi_Status_t)(__QAPI_ERROR(QAPI_MOD_BASE, 12))) /**< Entry already exists      */
 #define QAPI_ERR_NOT_INITIALIZED             ((qapi_Status_t)(__QAPI_ERROR(QAPI_MOD_BASE, 13))) /**< Unintialized              */
 #define QAPI_ERR_INVALID_STATE               ((qapi_Status_t)(__QAPI_ERROR(QAPI_MOD_BASE, 13))) /**< Invalid state             */
+
+
 
 /** @} */
 #endif // ] #ifndef __QAPI_STATUS_H__
