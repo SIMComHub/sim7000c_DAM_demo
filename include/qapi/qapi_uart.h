@@ -141,6 +141,7 @@ typedef enum
 {
   QAPI_SET_FLOW_CTRL_E        = 0,  /**< Set auto flow control. */ 
   QAPI_SET_BAUD_RATE_E        = 1,  /**< Set baud rate. */
+  QAPI_SET_RTS_CTRL_E         = 2,
 } qapi_UART_Ioctl_Command_e;
 
 /**
@@ -153,6 +154,18 @@ typedef enum
                                               auto RX RFR signal generation.  */
 } QAPI_Flow_Control_Type;
 
+
+/**
+ * Flow control types for UART. 
+ */
+typedef enum
+{
+  QAPI_RTS_DEASSERT,  // manually deassert RTS
+  QAPI_RTS_ASSERT,    // manually assert RTS
+  QAPI_RTS_AUTO,      // RTS automatically controlled by HW (based on level of RX FIFO)
+} QAPI_Rts_Control_type;
+
+
 /**
  * IOCTL command ID list of the UART.
  *
@@ -162,6 +175,8 @@ typedef union QAPI_UART_Ioctl_Param
   uint32_t                     baud_Rate; /**< Supported baud rates are 115200 bps, 1 Mbps,
                                                        2 Mbps, 3 Mbps, and 4 Mbps. */
   QAPI_Flow_Control_Type       Flow_Control_Type;    /**< Transmit flow control type. */
+
+  QAPI_Rts_Control_type        Rts_Control_type;
 } QAPI_UART_Ioctl_Param;
 
 /** @} */ /* end_addtogroup qapi_uart */

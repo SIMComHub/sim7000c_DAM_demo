@@ -26,7 +26,7 @@ __txm_module_preamble
     DCD       0x5                                               ; Module Major Version
     DCD       0x3                                               ; Module Minor Version
     DCD       32                                                ; Module Preamble Size in 32-bit words
-    DCD       0x12345678                                        ; Module ID (application defined) 
+    DCD       0x134350ac                                        ; Module ID (application defined) 
     DCD       0x01000000                                        ; Module Properties where:
     ;   Bits 31-24: Compiler ID
     ;           0 -> IAR

@@ -344,6 +344,9 @@ typedef enum qapi_Net_LWM2M_Response_Code_e
   QAPI_NET_LWM2M_404_NOT_FOUND_E          = 0x84,  /**< 404 - Not found. */
   QAPI_NET_LWM2M_405_METHOD_NOT_ALLOWED_E = 0x85,  /**< 405 - Method is not allowed. */
   QAPI_NET_LWM2M_406_NOT_ACCEPTABLE_E     = 0x86,  /**< 406 - Not acceptable. */
+  QAPI_NET_LWM2M_408_ENTITY_INCOMPLETE_E       = 0x88,  /**< 408 - Request Entity Incomplete. */
+  QAPI_NET_LWM2M_413_ENTITY_TOO_LARGE_E        = 0x8D,  /**< 413 - Request entity too large. */
+  QAPI_NET_LWM2M_415_UNSUPPORTED_DATA_FORMAT_E = 0x8F,  /**< 415 - Unsupported content format. */
   QAPI_NET_LWM2M_500_INTERNAL_SERVER_E    = 0xA0,  /**< 500 - Internal server. */
 } qapi_Net_LWM2M_Response_Code_t;
 
@@ -574,6 +577,7 @@ typedef struct qapi_Net_LWM2M_App_Ex_Obj_Data_s
    * with the message and passes it to the LWM2M client when a response or notification must be sent to
    * the server. After the transaction pertaining to the message is complete, the message ID can be
    * discarded from the application. */
+  uint32_t                        observation_seq_num; /**< Observation sequence number. */
   uint16_t                        notification_id;
   /**< Notification ID. \n
    * When a notification is sent using qapi_Net_LWM2M_Send_Message(), the notification ID associated

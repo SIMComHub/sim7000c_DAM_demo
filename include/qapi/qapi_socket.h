@@ -89,7 +89,6 @@
 #define EWOULDBLOCK    6	/**< The socket is marked nonblocking and the requested operation would block. */
 #define ECONNREFUSED   7	/**< Connection	refused */
 #define ECONNRESET     8	/**< Connection reset by peer */
-#define ENOTCONN       9	/**< Socket	is not connected */
 #define EBADF          9    /**< An invalid descriptor was specified. */
 #define EALREADY       10	/**< Operation is already in progress. */
 
@@ -117,6 +116,7 @@
 #define ETOOMANYREFS   28	/**< Too many references. */
 #define EFAULT         29	/**< Bad address. */
 #define ENETUNREACH    30	/**< Network is unreachable. */
+#define ENOTCONN       31	/**< Socket	is not connected */
 
 /** @} */ /* end_namegroup */
 

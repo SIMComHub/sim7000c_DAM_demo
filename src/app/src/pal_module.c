@@ -54,6 +54,7 @@
 
 #include "qapi/qapi_usb.h"
 #include "qapi/qapi_usb_types.h"
+#include "debug_uart.h"
 #include <stdbool.h>
 /*-------------------------------------------------------------------------
  * Preprocessor Definitions and Constants
@@ -70,7 +71,7 @@
 #define QCLI_STACK_SIZE 16384
 
 
-#define UART_PORT_CONTROL  //if UART_PORT_CONTROL has defined,used uart port, if not used usb port.
+//#define UART_PORT_CONTROL  //if UART_PORT_CONTROL has defined,used uart port, if not used usb port.
 /*-------------------------------------------------------------------------
  * Type Declarations
  *-----------------------------------------------------------------------*/
@@ -110,6 +111,7 @@ void QCLI_Thread(void *Param);
 static qbool_t PAL_Initialize(void);
 extern void loc_qcli_iface_init(void);
 extern void Initialize_PSM_Demo(void);
+extern void Uart_Debug_Initialize(void);
 /*-------------------------------------------------------------------------
  * Function Definitions
  *-----------------------------------------------------------------------*/
@@ -181,7 +183,7 @@ void QCLI_Thread(void *Param)
    char buf [128];
    char *buffer = buf;
    #endif
-
+   Debug_Printf("QCLI DAM tread started \r\n");
    PAL_CONSOLE_WRITE_STRING_LITERAL("QCLI DAM Thread Started");
    PAL_CONSOLE_WRITE_STRING_LITERAL(PAL_OUTPUT_END_OF_LINE_STRING);
 
@@ -366,7 +368,9 @@ int qcli_dam_app_start(void)
 {
    int                Result = PAL_Initialize();
    /*Sleep for 100 ms*/
+   Uart_Debug_Initialize();
    tx_thread_sleep(10);
+   Debug_Printf("SIMCOM cust app version 1 \r\n");
    QAPI_MSG_SPRINTF( MSG_SSID_LINUX_DATA, MSG_LEGACY_HIGH, "SIMCOM cust app version 1" );
    /* Initialize the platform.                                             */
    if(Result)

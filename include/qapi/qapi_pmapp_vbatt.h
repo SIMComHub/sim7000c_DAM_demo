@@ -48,8 +48,7 @@ extern "C" {
 #endif
 
 
-#include "qapi_types.h"
-#include "qapi_status.h"
+#include "qapi_pmic_status.h"
 #include "qapi_txm_base.h"
 #include "com_dtypes.h"
 

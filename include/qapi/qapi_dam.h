@@ -24,7 +24,9 @@
 #define TXM_QAPI_VISUAL_AT_OUTPUT TXM_QAPI_DAM_BASE + 2
 #define TXM_QAPI_VISUAL_AT_INPUT  TXM_QAPI_DAM_BASE + 3
 #define TXM_QAPI_VISUAL_AT_OPEN  TXM_QAPI_DAM_BASE + 4
+#define TXM_QAPI_FORCE_MODEM_SLEEP TXM_QAPI_DAM_BASE + 5
 
+#define TXM_QAPI_SET_DTR_EVENT_CALLBACK TXM_QAPI_DAM_BASE + 6
 
 #ifdef  QAPI_TXM_MODULE
                
@@ -42,6 +44,10 @@
 #define qapi_DAM_Visual_AT_Open(call_back)\
     ((unsigned short) (_txm_module_kernel_call_dispatcher)(TXM_QAPI_VISUAL_AT_OPEN, (ULONG) call_back,(ULONG) 0, (ULONG) 0))
                                                                                                                                                                                                                                            
+#define qapi_force_modem_sleep(sleep)\
+    ((int) (_txm_module_kernel_call_dispatcher)(TXM_QAPI_FORCE_MODEM_SLEEP, (uint8) sleep, (ULONG) 0, (ULONG) 0))
+#define qapi_DAM_Set_DTR_Event_Callback(call_back)\
+    ((unsigned short) (_txm_module_kernel_call_dispatcher)(TXM_QAPI_SET_DTR_EVENT_CALLBACK, (ULONG) call_back,(ULONG) 0, (ULONG) 0))
 
 #elif defined QAPI_TXM_SOURCE_CODE
     
@@ -102,7 +108,32 @@ void qapi_DAM_Visual_AT_Input(const unsigned char *data, unsigned short length);
 */
 unsigned short qapi_DAM_Visual_AT_Output(unsigned char *data, unsigned short length);
 
-
+/*============================================================================
+                qapi_force_modem_sleep
+============================================================================*/
+/**
+*  @brief force the modem go into sleep mode
+*
+*  @param[int]  sleep :  0, sleep. 1, wakeup
+*
+*  @return:  0, succeeded. -1, failed
+*/
+int qapi_force_modem_sleep(uint8 sleep);
+/*============================================================================
+                qapi_DAM_Set_DTR_Event_Callback
+============================================================================*/
+/**
+*  @brief Set DTR Event callback function.
+*
+*  @param[int]  if func is not NULL, when the status of DTR pin is changed, the func will be called.
+*		the type of func is simcom_dtr_event_cb_type
+*		typedef void(* simcom_dtr_event_cb_type)(uint32 dtr_status);
+*
+*  @return
+*   1                -- Call succeeded.
+*   0					--Already open by other
+*/
+void qapi_DAM_Set_DTR_Event_Callback(void *func);
 #else   
 #error "No QAPI flags defined"
 #endif

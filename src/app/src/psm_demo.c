@@ -115,6 +115,7 @@ static QCLI_Command_Status_t psm_demo_cancel_psm(uint32_t Parameter_Count, QCLI_
 static QCLI_Command_Status_t psm_demo_load_modem(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List);
 static QCLI_Command_Status_t psm_demo_simulate_hc_failure(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List);
 static QCLI_Command_Status_t update(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List);
+static QCLI_Command_Status_t atcmd(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List);
 
 const QCLI_Command_t psm_cmd_list[] =
 {
@@ -126,6 +127,7 @@ const QCLI_Command_t psm_cmd_list[] =
     {psm_demo_load_modem, false, "LOAD MODEM", "<client_id>", "Load Modem Dynamically"},
     {psm_demo_simulate_hc_failure, false, "SIMULATE HEALTH CHECK FAILURE", "<client_id>", "Simulate Health Check Failure"},
     {update, false, "update", "update", "update self version 3"},
+    {atcmd, false, "atcmd", "<at command>" , "Send At command to modem",NULL},
 };
 
 const QCLI_Command_Group_t psm_cmd_group =
@@ -142,6 +144,8 @@ int psm_complete;
 int is_modem_loaded;
 
 QCLI_Group_Handle_t qcli_psm_handle;     /* Handle for PSM Command Group. */
+TX_BYTE_POOL psm_byte_pool;
+UCHAR psm_byte[2048];
 
 void simcom_format_log_msg ( char *buf_ptr, int buf_size, char *fmt, ...)
 {
@@ -436,9 +440,40 @@ void Initialize_PSM_Demo(void)
     {
       QCLI_Printf(qcli_psm_handle, "PSM Registered\n");
     }
+    tx_byte_pool_create(&psm_byte_pool, "psm_byte_pool",psm_byte, 2048);
 
     return;
 }
 
-
+static QCLI_Command_Status_t atcmd(uint32_t Parameter_Count, QCLI_Parameter_t *Parameter_List)
+{   
+    if (Parameter_Count == 1)  
+    { 
+        unsigned char data[2048];       
+        int len = 0;         
+        memset(data,0,2048);   
+        memcpy(data,Parameter_List[0].String_Value,strlen((char *)Parameter_List[0].String_Value));
+        
+        memcpy(data+strlen((char *)data),"\r\n",2);
+         qapi_DAM_Visual_AT_Input(data,strlen((char *)data));
+        SIMCOM_LOG_MSG("atcmd is :%s,%d", data,strlen((char *)data));
+      
+        do
+        {
+            qapi_Timer_Sleep(50,QAPI_TIMER_UNIT_MSEC,false);
+            memset(data,0x00,2048);         
+            len=   qapi_DAM_Visual_AT_Output(data,2048);
+            if(len > 0)        
+            {
+                QCLI_Printf(qcli_psm_handle, "%s",data);
+            }
+        }while(len > 0);       
+    }
+    else 
+    {
+        return QCLI_STATUS_USAGE_E;     
+    }
+    
+    return QCLI_STATUS_SUCCESS_E;   
+}
 

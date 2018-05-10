@@ -132,7 +132,26 @@ typedef struct
   /**< HTTP response code. */
   const void   *data;
   /**< HTTP response data. */
+  const void   *rsp_hdr;
+  /**< HTTP response data header. */  
+  uint32_t      rsp_hdr_len;
+  /**< HTTP response data header length. */
 } qapi_Net_HTTPc_Response_t;
+
+/**
+ * @brief HTTP socket options.
+ */
+typedef struct __qapi_Net_HTTPc_Sock_Opts_s
+{  
+  int32_t level;
+  /**< Specifies the protocol level at which the option resides. */
+  int32_t opt_name;
+  /**< Socket option name. */
+  void *opt_value;
+  /**< Socket option value. */
+  uint32_t opt_len;
+  /**< Socket option length. */
+}  qapi_Net_HTTPc_Sock_Opts_t;
 
 /**
  * @brief Structure to configure an HTTP client session. 
@@ -140,8 +159,22 @@ typedef struct
 typedef  struct __qapi_Net_HTTPc_Config_s
 {
   uint16_t addr_type;
-  /**< Address type AF_INET or AF_INET6 (used for DNS resolution only). */
-
+  /**< Address type AF_UNSPEC, AF_INET or AF_INET6 (used for DNS resolution only). */
+  uint8_t sock_options_cnt; 
+  /**< Number of socket options. */
+  qapi_Net_HTTPc_Sock_Opts_t *sock_options;
+  /**< Socket options - only "Linger" option is currently supported. */
+  uint16_t max_send_chunk;
+  /**< Maximum send data chunk per transaction. */
+  uint32_t max_send_chunk_delay_ms;
+  /**< Maximum delay between send data chunks (msec) */
+  uint8_t max_send_chunk_retries; 
+  /**< Maximum send data chunk retries. */
+  uint8_t max_conn_poll_cnt; 
+  /**< Maximum connect polling count. */
+  uint32_t max_conn_poll_interval_ms; 
+  /**< Maximum connect polling interval */  
+ 
 } qapi_Net_HTTPc_Config_t;
 
 /**

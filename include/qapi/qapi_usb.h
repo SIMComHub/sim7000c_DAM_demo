@@ -189,7 +189,7 @@ qapi_USB_Status_t qapi_USB_Write(void * Data_Ptr,
  *  QAPI_ERR_INVALID_PARAM -- The command received is not supported.
  */
 qapi_USB_Status_t qapi_USB_Ioctl(qapi_USB_Ioctl_Cmd_t Cmd,
-							   qapi_USB_Ioctl_Param_t * Param);
+							   void * Param);
 
 /** @} */ /* end_addtogroup qapi_usb */
 

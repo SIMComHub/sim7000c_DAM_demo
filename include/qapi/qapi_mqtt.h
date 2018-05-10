@@ -31,7 +31,7 @@ All rights reserved.
 #define  TXM_QAPI_MQTT_SET_MESSAGE_CB     TXM_QAPI_MQTT_BASE + 10
 #define  TXM_QAPI_MQTT_SET_PUBLISH_CB     TXM_QAPI_MQTT_BASE + 11
 #define  TXM_QAPI_MQTT_PUBLISH_ID         TXM_QAPI_MQTT_BASE + 12
-
+#define  TXM_QAPI_MQTT_SET_ALLOW_UNSUB_PUB TXM_QAPI_MQTT_BASE + 13
 
 
     
@@ -44,7 +44,7 @@ All rights reserved.
 /** @name Net MQTT Length Defines
 @{ */
 
-#define QAPI_NET_MQTT_MAX_CLIENT_ID_LEN 23 /*MQTT Stack uses same value*/
+#define QAPI_NET_MQTT_MAX_CLIENT_ID_LEN 128 /*MQTT Stack uses same value*/
 #define QAPI_NET_MQTT_MAX_TOPIC_LEN 128    /*MAX Topic Len*/
 
 /** @} */ /* end_namegroup */
@@ -181,6 +181,7 @@ typedef void (*qapi_Net_MQTT_Publish_CB_t)(qapi_Net_MQTT_Hndl_t mqtt,
 #define qapi_Net_MQTT_Set_Subscribe_Callback(a,b)   ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_SET_SUBSCRIBE_CB   , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #define qapi_Net_MQTT_Set_Message_Callback(a,b)     ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_SET_MESSAGE_CB     , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #define qapi_Net_MQTT_Set_Publish_Callback(a,b)     ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_SET_PUBLISH_CB     , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
+#define qapi_Net_MQTT_Allow_Unsub_Publish(a,b)      ((qapi_Status_t)  (_txm_module_system_call12)(TXM_QAPI_MQTT_SET_ALLOW_UNSUB_PUB     , (ULONG) a, (ULONG) b, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0, (ULONG) 0))
 #else
 
 UINT qapi_Net_MQTT_Handler(UINT id, UINT a1, UINT a2, UINT a3, UINT a4, UINT a5, UINT a6, UINT a7, UINT a8, UINT a9, UINT a10, UINT a11, UINT a12);
@@ -291,6 +292,7 @@ qapi_Status_t qapi_Net_MQTT_Set_Message_Callback(qapi_Net_MQTT_Hndl_t hndl, qapi
  * @return QAPI_OK on Success or < 0 on Failure
  */
 qapi_Status_t qapi_Net_MQTT_Set_Publish_Callback(qapi_Net_MQTT_Hndl_t hndl, qapi_Net_MQTT_Publish_CB_t callback);
+qapi_Status_t qapi_Net_MQTT_Allow_Unsub_Publish(qapi_Net_MQTT_Hndl_t hndl, bool  allow_unsub_pub);
 #endif /*!TXM_MODULE*/
 
 #endif /*_QAPI_NET_MQTT_H*/

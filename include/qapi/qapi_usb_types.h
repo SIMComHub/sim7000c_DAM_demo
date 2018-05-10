@@ -61,9 +61,11 @@ typedef int32_t           qapi_USB_Status_t;
 /** Client callback function type to be called when data is received from the client. */
 typedef void (* qapi_USB_App_Rx_Cb_t) (uint16_t num_bytes);
 
+typedef void (* qapi_USB_App_Disconnect_Cb_t) (void);
 /** IOCTL command type. */
 typedef enum {
   QAPI_USB_RX_CB_REG_E = 0,  /**< IOCTL command argument to register a client callback. */
+  QAPI_USB_DISCONNECT_CB_REG_E   /**< Command argument to register disconnect callback. */
 } qapi_USB_Ioctl_Cmd_t;
 
 /** IOCTL parameter type. */
